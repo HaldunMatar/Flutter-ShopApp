@@ -49,6 +49,9 @@ class Products with ChangeNotifier {
     return [..._items];
   }
 
+  final String authToken;
+
+  Products(this.authToken, this._items);
   List<Product> get favoriteItems {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
@@ -67,11 +70,14 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
   Future<void> fetchAndSetProducts() async {
-    final url = Uri.https(
-        'flutter-update-1e2ec-default-rtdb.firebaseio.com', '/products.json');
+    print('_token fetchAndSetProducts  = ' + authToken);
+    final url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
+        '/products.json', {'auth': '$authToken'});
     try {
       final response = await http.get(url);
+
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(

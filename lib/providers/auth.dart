@@ -45,6 +45,7 @@ class Auth with ChangeNotifier {
       }
 
       _token = responseData['idToken'];
+      print('_token = ' + _token);
       _userId = responseData['localId'];
       _expiryDate = DateTime.now().add(
         Duration(
