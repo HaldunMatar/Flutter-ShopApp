@@ -124,8 +124,8 @@ class Products with ChangeNotifier {
   Future<void> addProduct(Product product) async {
     //gs://flutter-update-1e2ec.appspot.com
 
-    final url = Uri.https(
-        'flutter-update-1e2ec-default-rtdb.firebaseio.com', '/products.json');
+    final url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
+        '/products.json', {'auth': '$authToken'});
 
     try {
       final response = await http.post(
@@ -135,7 +135,7 @@ class Products with ChangeNotifier {
           'description': product.description,
           'imageUrl': product.imageUrl,
           'price': product.price,
-          'isFavorite': product.isFavorite,
+          'creatorId': userId,
         }),
       );
       final newProduct = Product(
@@ -158,8 +158,8 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
 
     if (prodIndex >= 0) {
-      final url = Uri.https(
-          'flutter-update-1e2ec-default-rtdb.firebaseio.com', '//$id.json');
+      final url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
+          '/$id.json', {'auth': '$authToken'});
 
       await http.patch(url,
           body: json.encode({
@@ -176,8 +176,8 @@ class Products with ChangeNotifier {
   }
 
   Future<void> deleteProduct(String id) async {
-    final url = Uri.https(
-        'flutter-update-1e2ec-default-rtdb.firebaseio.com', '//$id.json');
+    final url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
+        '/$id.json', {'auth': '$authToken'});
 
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
     var existingProduct = _items[existingProductIndex];
