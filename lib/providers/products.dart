@@ -50,8 +50,9 @@ class Products with ChangeNotifier {
   }
 
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this.userId, this._items);
   List<Product> get favoriteItems {
     return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
@@ -69,15 +70,38 @@ class Products with ChangeNotifier {
   //   _showFavoritesOnly = false;
   //   notifyListeners();
   // }
-  Future<void> fetchAndSetProducts() async {
-    print('_token fetchAndSetProducts  = ' + authToken);
+/*
+  print('_token fetchAndSetProducts  = ' + authToken);
     final url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
         '/products.json', {'auth': '$authToken'});
+
+
+*/
+
+  Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    final filterString = filterByUser
+        ? {
+            'auth': '$authToken',
+            'orderBy': '"creatorId"',
+            'equalTo': '"$userId"'
+          }
+        : {'auth': '$authToken'};
+
+    var url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
+        '/products.json', filterString);
+
     try {
       final response = await http.get(url);
-
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      if (extractedData == null) {
+        return;
+      }
 
+      url = Uri.https('flutter-update-1e2ec-default-rtdb.firebaseio.com',
+          '/userFavorites/$userId.json', {'auth': '$authToken'});
+
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
       final List<Product> loadedProducts = [];
       extractedData.forEach((prodId, prodData) {
         loadedProducts.add(Product(
@@ -85,7 +109,8 @@ class Products with ChangeNotifier {
           title: prodData['title'],
           description: prodData['description'],
           price: prodData['price'],
-          isFavorite: prodData['isFavorite'],
+          isFavorite:
+              favoriteData == null ? false : favoriteData[prodId] ?? false,
           imageUrl: prodData['imageUrl'],
         ));
       });
