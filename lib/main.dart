@@ -29,7 +29,9 @@ class MyApp extends StatelessWidget {
             auth.token,
             auth.userId,
             previousProducts == null ? [] : previousProducts.items,
+          
           ),
+          
         ),
         ChangeNotifierProvider.value(
           value: Cart(),
