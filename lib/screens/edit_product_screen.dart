@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/product.dart';
 import '../providers/products.dart';
+import 'package:path/path.dart' as path;
+
+import 'package:firebase_storage/firebase_storage.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -82,6 +88,43 @@ class _EditProductScreenState extends State<EditProductScreen> {
       setState(() {});
     }
   }
+
+  Future<void> _upload(String inputSource) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    final picker = ImagePicker();
+    PickedFile pickedImage;
+    try {
+      XFile pickedImage1 = await picker.pickImage(
+          source: inputSource == 'camera'
+              ? ImageSource.camera
+              : ImageSource.gallery);
+
+      final String fileName = path.basename(pickedImage1.path);
+      File imageFile = File(pickedImage1.path);
+
+      try {
+        // Uploading the selected image with some custom meta data
+
+        await storage.ref(fileName).putFile(
+            imageFile,
+            SettableMetadata(customMetadata: {
+              'uploaded_by': 'A bad guy',
+              'description': 'Some description...'
+            }));
+
+        // Refresh the UI
+        setState(() {});
+      } on Exception catch (error) {
+        print(error);
+      }
+    } catch (err) {
+      print(
+          "gggggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" +
+              err);
+    }
+  }
+
+  //**************************************** */
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
@@ -294,6 +337,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             },
                           ),
                         ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _upload("camera");
+                            },
+                            child: const Text('upload'),
+                          ),
+                        )
                       ],
                     ),
                   ],

@@ -1,9 +1,11 @@
 import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import './product.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class Products with ChangeNotifier {
   List<Product> _items = [
@@ -118,6 +120,25 @@ class Products with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       throw (error);
+    }
+  }
+
+  Future<void> uploadFile(File imageFile) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      // Uploading the selected image with some custom meta data
+      final String fileName = path.basename(imageFile.path);
+      await storage.ref(fileName).putFile(
+          imageFile,
+          SettableMetadata(customMetadata: {
+            'uploaded_by': 'A bad guy',
+            'description': 'Some description...'
+          }));
+
+      // Refresh the UI
+      //  setState(() {});
+    } on FirebaseException catch (error) {
+      print(error);
     }
   }
 
