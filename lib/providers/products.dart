@@ -79,6 +79,25 @@ class Products with ChangeNotifier {
 
 
 */
+  Future<String> storeIamge(File imageFile) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    try {
+      // Uploading the selected image with some custom meta data
+      final String fileName = path.basename(imageFile.path);
+      final storageref = await storage.ref(fileName).putFile(
+          imageFile,
+          SettableMetadata(customMetadata: {
+            'uploaded_by': 'H M ',
+            'description': 'Some description...'
+          }));
+
+      String url = (await storageref.ref.getDownloadURL()).toString();
+      print(url);
+      return url;
+    } catch (err) {
+      print("upload image" + err);
+    }
+  }
 
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
     final filterString = filterByUser

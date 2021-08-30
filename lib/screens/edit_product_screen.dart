@@ -89,8 +89,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     }
   }
 
-  Future<void> _upload(String inputSource) async {
-    FirebaseStorage storage = FirebaseStorage.instance;
+  Future<String> _upload(String inputSource) async {
     final picker = ImagePicker();
     PickedFile pickedImage;
     try {
@@ -102,25 +101,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
       final String fileName = path.basename(pickedImage1.path);
       File imageFile = File(pickedImage1.path);
 
-      try {
-        // Uploading the selected image with some custom meta data
+      final String url = await Provider.of<Products>(context, listen: false)
+          .storeIamge(imageFile);
 
-        await storage.ref(fileName).putFile(
-            imageFile,
-            SettableMetadata(customMetadata: {
-              'uploaded_by': 'A bad guy',
-              'description': 'Some description...'
-            }));
+      _imageUrlController.text = url;
 
-        // Refresh the UI
-        setState(() {});
-      } on Exception catch (error) {
-        print(error);
-      }
-    } catch (err) {
-      print(
-          "gggggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh" +
-              err);
+      setState(() {});
+
+      // Refresh the UI
+
+    } on Exception catch (error) {
+      print(error);
     }
   }
 
@@ -314,15 +305,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               if (value.isEmpty) {
                                 return 'Please enter an image URL.';
                               }
-                              if (!value.startsWith('http') &&
+                              /*  if (!value.startsWith('http') &&
                                   !value.startsWith('https')) {
                                 return 'Please enter a valid URL.';
                               }
-                              if (!value.endsWith('.png') &&
+                             if (!value.endsWith('.png') &&
                                   !value.endsWith('.jpg') &&
                                   !value.endsWith('.jpeg')) {
                                 return 'Please enter a valid image URL.';
-                              }
+                              }*/
                               return null;
                             },
                             onSaved: (value) {
@@ -337,16 +328,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             },
                           ),
                         ),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {
-                              _upload("camera");
-                            },
-                            child: const Text('upload'),
-                          ),
-                        )
                       ],
                     ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Expanded(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton.icon(
+                            onPressed: () => _upload('camera'),
+                            icon: Icon(Icons.camera),
+                            label: Text('camera')),
+                        ElevatedButton.icon(
+                            onPressed: () => _upload('gallery'),
+                            icon: Icon(Icons.library_add),
+                            label: Text('Gallery')),
+                      ],
+                    ))
                   ],
                 ),
               ),
