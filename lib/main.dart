@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shop_app/payments/paymentpage.dart';
 import './screens/splash_screen.dart';
 
 import './screens/cart_screen.dart';
@@ -55,7 +56,8 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'MyShop',
           theme: ThemeData(
-            primarySwatch: Colors.purple,
+            primarySwatch: Colors.green,
+
             colorScheme: Theme.of(context)
                 .colorScheme
                 .copyWith(onSecondary: Colors.green),
@@ -81,6 +83,7 @@ class MyApp extends StatelessWidget {
             OrdersScreen.routeName: (ctx) => OrdersScreen(),
             UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
             EditProductScreen.routeName: (ctx) => EditProductScreen(),
+            PaymentPage.routeName: (ctx) => PaymentPage(),
           },
         ),
       ),

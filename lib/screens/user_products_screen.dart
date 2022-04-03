@@ -20,7 +20,8 @@ class UserProductsScreen extends StatelessWidget {
     print('rebuilding...');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Products'),
+        backgroundColor: Colors.green,
+        title: const Text('المنتجات'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add),

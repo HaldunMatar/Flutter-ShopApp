@@ -18,7 +18,7 @@ class UserProductItem extends StatelessWidget {
         backgroundImage: NetworkImage(imageUrl),
       ),
       trailing: Container(
-        color: Colors.red,
+        // color: Colors.red,
         width: 100,
         child: Row(
           children: <Widget>[

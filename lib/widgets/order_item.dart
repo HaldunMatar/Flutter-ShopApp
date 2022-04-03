@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shop_app/payments/paymentpage.dart';
 
 import '../providers/orders.dart' as ord;
 
@@ -20,11 +21,15 @@ class _OrderItemState extends State<OrderItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Color.fromARGB(179, 27, 153, 2), width: 1),
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       margin: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
           ListTile(
-            title: Text('\$${widget.order.amount}'),
+            title: Text('\$${widget.order.amount.roundToDouble()}'),
             subtitle: Text(
               DateFormat('dd/MM/yyyy hh:mm').format(widget.order.dateTime),
             ),
@@ -66,7 +71,17 @@ class _OrderItemState extends State<OrderItem> {
                     )
                     .toList(),
               ),
-            )
+            ),
+          ElevatedButton(
+            child: Text('الشراء '),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed(PaymentPage.routeName);
+            },
+            style: ElevatedButton.styleFrom(
+                primary:
+                    Color.fromARGB(255, 45, 141, 3) // This is what you need!
+                ),
+          ),
         ],
       ),
     );

@@ -168,7 +168,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Product'),
+        backgroundColor: Colors.green,
+        title: Text('تحرير المنتجات'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.save),
@@ -338,10 +339,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                                primary: Color.fromARGB(255, 33, 179, 45)),
                             onPressed: () => _upload('camera'),
                             icon: Icon(Icons.camera),
                             label: Text('camera')),
                         ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                                primary: Color.fromARGB(255, 33, 179, 45)),
                             onPressed: () => _upload('gallery'),
                             icon: Icon(Icons.library_add),
                             label: Text('Gallery')),
